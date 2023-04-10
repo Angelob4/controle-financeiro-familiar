@@ -1,0 +1,11 @@
+#incomes {
+    #table-income {
+        tr {
+            td {
+                &:first-of-type {
+                    width: 30px;
+                }
+            }
+        }
+    }
+}
