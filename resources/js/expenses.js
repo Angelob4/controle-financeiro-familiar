@@ -1,4 +1,4 @@
-$(function () {
+ $(function () {
 
     $("body#expenses").each(function () {
 
@@ -78,7 +78,7 @@ $(function () {
                                         url: 'ajax/delete/expenses',
                                         data,
                                         success: function (response) {
-                                            console.log($this.parents('tr').remove());
+                                            $this.parents('tr').remove();
                                         }
                                     });
                                 })
