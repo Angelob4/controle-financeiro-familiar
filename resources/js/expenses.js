@@ -46,7 +46,10 @@ $(function () {
                         $(response).each(function () {
 
                             try {
-                                $(`
+
+                                const expenseId = this.id;
+
+                                const $tr = $(`
                                     <tr>
                                         <td class="text-center">${this.day.toString().padStart(2, '0')}</td>
                                         <td class="text-center">${this.name}</td>
@@ -56,9 +59,31 @@ $(function () {
                                                 ${(this.value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })).padStart(50, ' ')}
                                             </div>
                                         </td>
+                                        <td class="d-flex justify-content-center">
+                                            <span class="btn py-0"></span>
+                                        </td>
                                     </tr>
-                                `).appendTo($modalBody)
+                                `);
 
+                                $tr.find('td>span.btn').on('click', function(){
+
+                                    const data = {
+                                        id : expenseId
+                                    }
+
+                                    const $this = $(this);
+                                    $this.addClass('disabled');
+                                    $.ajax({
+                                        type: "DELETE",
+                                        url: 'ajax/delete/expenses',
+                                        data,
+                                        success: function (response) {
+                                            console.log($this.parents('tr').remove());
+                                        }
+                                    });
+                                })
+
+                                $modalBody.append($tr);
                             } catch (error) {
                                 console.error(error);
                             }
@@ -142,7 +167,7 @@ $(function () {
             $form.find("button[data-bs-dismiss=modal]").trigger("click");
 
         })
-
+        $yearSelect.trigger('change');
     })
 
 })

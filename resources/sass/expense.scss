@@ -1,0 +1,57 @@
+@keyframes crescer {
+    to {
+        width: 100px;
+        content: 'teste';
+    }
+}
+
+body {
+    table {
+        tr {
+            th {
+                &:last-of-type{
+                    width: 96px;
+                }
+
+            }
+
+            td {
+                &:last-of-type {
+
+                    width: 96px;
+
+                    span {
+                        border: #dc3545 solid 1px;
+                        color: #dc3545;
+                        &::before {
+                            content: 'x';
+                        }
+                    }
+
+                    &:hover {
+                        // background-color: #dc3545;
+                        background-color: #dc3545;
+
+                        span {
+                            border-radius: 0 !important;
+                            background-color: #dc3545;
+                            color: white;
+
+                            &::before {
+                                content: 'remover';
+                            }
+                            &.btn{
+                                background-color: #dc3545;
+                            }
+                            &:hover {
+                                background-color: #dc3545;
+                            }
+                        }
+                    }
+
+
+                }
+            }
+        }
+    }
+}
