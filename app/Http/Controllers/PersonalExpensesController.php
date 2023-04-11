@@ -81,4 +81,16 @@ class PersonalExpensesController extends Controller
 
         return $expenses;
     }
+
+    function delete(Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer',
+        ]);
+
+        if(!$validator->fails()) {
+            PersonalExpenses::find($request->id)->delete();
+            return response('success', 200);
+        }
+    }
 }

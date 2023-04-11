@@ -29,6 +29,7 @@ Route::get('despesas', [PersonalExpensesController::class, 'show'])->name('expen
 // ajax routes
 Route::post('ajax/storage/incomes', [PersonalIncomesController::class, 'storage'])->name('personalExpenses.storage');
 Route::post('ajax/storage/expenses', [PersonalExpensesController::class, 'storage'])->name('personalExpenses.storage');
+Route::delete('ajax/delete/expenses', [PersonalExpensesController::class, 'delete'])->name('personalExpenses.delete');
 Route::get('ajax/atualizar-dashboard/mes/{mes}/ano/{ano}', [dashboardController::class, 'populate']);
 Route::get('ajax/get/incomes', [PersonalIncomesController::class, 'get']);
 Route::get('ajax/get/expenses', [PersonalExpensesController::class, 'get']);
