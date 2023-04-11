@@ -22,7 +22,7 @@ $(function () {
 
             $(`
                 <tr>
-                    <td  colspan="3" class="text-start">
+                    <td  colspan="4" class="text-start">
                         <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
@@ -91,7 +91,7 @@ $(function () {
                     } else {
                         $(`
                             <tr>
-                                <td colspan="3" class="text-center">Não há registros para esse mês </td>
+                                <td colspan="4" class="text-center">Não há registros para esse mês </td>
                             </tr>
                         `).appendTo($modalBody);
                     }
