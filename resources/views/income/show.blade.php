@@ -35,6 +35,9 @@
                                                     {{number_format($income->value, 2, ',', '.') }}
                                                 </div>
                                             </td>
+                                            <td class="d-flex justify-content-center">
+                                                <span class="btn py-0"></span>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </x-card.personal>

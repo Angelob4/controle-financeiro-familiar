@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PersonalIncomes;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class PersonalIncomesController extends Controller
 {
@@ -56,5 +57,17 @@ class PersonalIncomesController extends Controller
         });
 
         return $incomes;
+    }
+
+    function delete(Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer',
+        ]);
+
+        if(!$validator->fails()) {
+            PersonalIncomes::find($request->id)->delete();
+            return response('success', 200);
+        }
     }
 }

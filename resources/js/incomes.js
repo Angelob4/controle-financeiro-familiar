@@ -45,18 +45,44 @@ $(function () {
                         $(response).each(function () {
 
                             try {
-                                $(`
-                                    <tr>
-                                        <td class="text-center">${this.day.toString().padStart(2, '0')}</td>
-                                        <td class="text-center">${this.name}</td>
-                                        <td class="text-center">
-                                            <div>
-                                                <span>R$</span>
-                                                ${(this.value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })).padStart(50, ' ')}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                `).appendTo($modalBody)
+
+                                const incomeId = this.id;
+
+                                const $tr = $(`
+                                        <tr>
+                                            <td class="text-center">${this.day.toString().padStart(2, '0')}</td>
+                                            <td class="text-center">${this.name}</td>
+                                            <td class="text-center">
+                                                <div>
+                                                    <span>R$</span>
+                                                    ${(this.value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })).padStart(50, ' ')}
+                                                </div>
+                                            </td>
+                                            <td class="d-flex justify-content-center">
+                                                <span class="btn py-0"></span>
+                                            </td>
+                                        </tr>
+                                `);
+
+                                $tr.find('td>span.btn').on('click', function(){
+
+                                    const data = {
+                                        id : incomeId
+                                    }
+
+                                    const $this = $(this);
+                                    $this.addClass('disabled');
+                                    $.ajax({
+                                        type: "DELETE",
+                                        url: 'ajax/delete/incomes',
+                                        data,
+                                        success: function (response) {
+                                            $this.parents('tr').remove();
+                                        }
+                                    });
+                                })
+
+                                $modalBody.append($tr);
 
                             } catch (error) {
                                 console.error(error);
@@ -144,7 +170,7 @@ $(function () {
             $form.find("button[data-bs-dismiss=modal]").trigger("click");
 
         })
-
+        $yearSelect.trigger('change');
     })
 
 })
