@@ -1,4 +1,133 @@
+import Chart from 'chart.js/auto';
+
+
 $(function () {
+
+    const loadChartExpensesInYear = (year) => {
+
+
+        const ctxIncome = $('#myChartIncomes');
+        const ctxExpense = $('#myChartExpenses');
+        let valuesExpensesPerMonth = [];
+        let valuesIncomesPerMonth = [];
+        const monthsInYear = {
+            1 : 'Jan',
+            2 : 'Fev',
+            3 : 'Mar',
+            4 : 'Abr',
+            5 : 'Mai',
+            6 : 'Jun',
+            7 : 'Jul',
+            8 : 'Ago',
+            9 : 'Set',
+            10: 'Out',
+            11 : 'Now',
+            12 : 'Dez'
+        };
+
+
+        const data = {'year' : year};
+
+        $.ajax({
+            url: `ajax/get/year-relatory`,
+            method: "GET",
+            data,
+            success: function (response) {
+                console.log(response);
+
+                for (const key in response.expenses){
+                    valuesExpensesPerMonth.push(response.expenses[key]);
+                }
+
+                for (const key in response.incomes){
+                    valuesIncomesPerMonth.push(response.incomes[key]);
+                }
+
+                new Chart(ctxIncome, {
+                    type: 'bar',
+                    data: {
+                      labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jul', 'Ago', 'Set', 'Out', 'Now', 'Dez'],
+                      datasets: [
+                        {
+                            label: 'Ganhos',
+                            data: valuesIncomesPerMonth,
+                            borderColor: 'green',
+                            backgroundColor: 'green',
+                        },
+                        // {
+                        //   label: 'Gastos',
+                        //   data: valuesExpensesPerMonth,
+                        //   borderColor: 'red',
+                        //   backgroundColor: 'red',
+                        // },
+
+                      ],
+                    },
+                    options: {
+                      indexAxis: 'x',
+                      // Elements options apply to all of the options unless overridden in a dataset
+                      // In this case, we are setting the border of each horizontal bar to be 2px wide
+                      elements: {
+                        bar: {
+                          borderWidth: 2,
+                        }
+                      },
+                      responsive: true,
+                      plugins: {
+                        legend: {
+                          display: false,
+                          position: 'right',
+                        },
+                        title: {
+                          display: true,
+                          text: 'Proventos'
+                        }
+                      }
+                    },
+                  });
+
+                  new Chart(ctxExpense, {
+                    type: 'bar',
+                    data: {
+                      labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jul', 'Ago', 'Set', 'Out', 'Now', 'Dez'],
+                      datasets: [
+
+                        {
+                          label: 'Gastos',
+                          data: valuesExpensesPerMonth,
+                          borderColor: 'red',
+                          backgroundColor: 'red',
+                        },
+
+                      ],
+                    },
+                    options: {
+                      indexAxis: 'x',
+                      // Elements options apply to all of the options unless overridden in a dataset
+                      // In this case, we are setting the border of each horizontal bar to be 2px wide
+                      elements: {
+                        bar: {
+                          borderWidth: 2,
+                        }
+                      },
+                      responsive: true,
+                      plugins: {
+                        legend: {
+                          display: false,
+                          position: 'right',
+                        },
+                        title: {
+                          display: true,
+                          text: 'Gastos'
+                        }
+                      }
+                    },
+                  });
+            }
+        });
+
+    }
+
 
     $("body#dashboard").each(function () {
 
@@ -7,6 +136,10 @@ $(function () {
         let today = now.toISOString().slice(0, 10);
 
         $("input[type='date']").val(today);
+
+
+
+
 
         // Define as constantes para strings literais
         const CLASS = {
@@ -34,6 +167,7 @@ $(function () {
         const $inputDay = $dashboard.find(".input-day");
         const $cardBody = $(".card-body");
 
+        loadChartExpensesInYear($yearSelect.val());
 
         $monthSelect.val(new Date().getUTCMonth() + 1).trigger("change");
         const clearAllTables = () => {

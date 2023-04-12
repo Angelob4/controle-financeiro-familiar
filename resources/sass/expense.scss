@@ -20,34 +20,7 @@ body {
 
                     width: 96px;
 
-                    span {
-                        border: #dc3545 solid 1px;
-                        color: #dc3545;
-                        &::before {
-                            content: 'x';
-                        }
-                    }
 
-                    &:hover {
-                        // background-color: #dc3545;
-                        background-color: #dc3545;
-
-                        span {
-                            border-radius: 0 !important;
-                            background-color: #dc3545;
-                            color: white;
-
-                            &::before {
-                                content: 'remover';
-                            }
-                            &.btn{
-                                background-color: #dc3545;
-                            }
-                            &:hover {
-                                background-color: #dc3545;
-                            }
-                        }
-                    }
 
 
                 }

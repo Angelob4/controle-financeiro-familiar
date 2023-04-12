@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PersonalExpenses;
 use App\Models\PersonalIncomes;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use stdClass;
@@ -78,6 +79,26 @@ class dashboardController extends Controller
         return response()->json($dashboardData);
     }
 
+    function get(){
+
+        $expensesByMonth = PersonalExpenses::whereYear('payment_date',  request()->year)->get()->groupBy(function($expense){
+            return Carbon::parse($expense->payment_date)->format('m');
+        });
+
+        $totalExpensesByMonth = $expensesByMonth->mapWithKeys(function ($expenses, $month) {
+            return [$month => $expenses->sum('value')];
+        })->all();
+
+        $incomesByMonth = PersonalIncomes::whereYear('payment_date',  request()->year)->get()->groupBy(function($income){
+            return Carbon::parse($income->payment_date)->format('m');
+        });
+
+        $totalIncomesByMonth = $incomesByMonth->mapWithKeys(function ($incomes, $month) {
+            return [$month => $incomes->sum('value')];
+        })->all();
+
+        return ["expenses" => $totalExpensesByMonth, "incomes" => $totalIncomesByMonth];
+    }
 
 
 }

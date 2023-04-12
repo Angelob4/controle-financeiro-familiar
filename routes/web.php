@@ -34,6 +34,7 @@ Route::delete('ajax/delete/expenses', [PersonalExpensesController::class, 'delet
 Route::get('ajax/atualizar-dashboard/mes/{mes}/ano/{ano}', [dashboardController::class, 'populate']);
 Route::get('ajax/get/incomes', [PersonalIncomesController::class, 'get']);
 Route::get('ajax/get/expenses', [PersonalExpensesController::class, 'get']);
+Route::get('ajax/get/year-relatory', [DashboardController::class, 'get']);
 
 Route::get('teste/mes/{mes}/ano/{ano}', function($mes, $ano){
 
