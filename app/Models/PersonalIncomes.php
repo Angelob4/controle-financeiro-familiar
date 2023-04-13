@@ -33,7 +33,7 @@ class PersonalIncomes extends Model
     }
 
     function scopeGetByMonthYear($query, $month, $year){
-        return $query->whereMonth('payment_date', $month)->whereYear('payment_date', $year);
+        return $query->whereMonth('payment_date', $month)->whereYear('payment_date', $year)->orderBy('payment_date');
     }
 
 }
