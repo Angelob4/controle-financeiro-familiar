@@ -17,17 +17,24 @@ class dashboardController extends Controller
         return $count > 0 ? array_sum($values) / $count : 0;
     }
 
+    function getMedian($values) {
+        sort($values);
+        $count = count($values);
+        $middle = floor(($count - 1) / 2);
+        if ($count % 2 == 0) {
+          $median = ($values[$middle] + $values[$middle + 1]) / 2;
+        } else {
+          $median = $values[$middle];
+        }
+        return $median;
+      }
 
     private function getDashboardData($selectedMonth = null, $selectedYear = null){
 
         $year = $selectedYear ?? date('Y');
         $month = $selectedMonth ?? date('m');
 
-        // if(request()->ajax()){
-        //     dd($month, $year);
-        // }
-
-        $dashboardData = [
+         $dashboardData = [
             'incomes' => [
                 'list' => PersonalIncomes::getByYear($year)->get(),
                 'totalInYear' => 0,
@@ -53,6 +60,10 @@ class dashboardController extends Controller
                 ->toArray();
         }
 
+        // Calcula Mediana
+        $dashboardData['expenses']['median'] = $this->getMedian($dashboardData['expenses']['byMonth']);
+        $dashboardData['incomes']['median'] = $this->getMedian($dashboardData['incomes']['byMonth']);
+
         // Calcula o total anual de receitas e despesas
         $dashboardData['incomes']['totalInYear'] = $dashboardData['incomes']['list']->sum('value');
         $dashboardData['expenses']['totalInYear'] = $dashboardData['expenses']['list']->sum('value');
@@ -60,7 +71,7 @@ class dashboardController extends Controller
         // Calcula a média mensal de receitas e despesas
         $dashboardData['incomes']['avg'] = $this->calculateAvg($dashboardData['incomes']['byMonth']);
         $dashboardData['expenses']['avg'] = $this->calculateAvg($dashboardData['expenses']['byMonth']);
-        // dd($dashboardData);
+
         return $dashboardData;
     }
 
@@ -73,9 +84,7 @@ class dashboardController extends Controller
 
     function populate($mes, $ano)
     {
-
         $dashboardData = $this->getDashboardData($mes, $ano);
-        // dd($dashboardData);
         return response()->json($dashboardData);
     }
 
