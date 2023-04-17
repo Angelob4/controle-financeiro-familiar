@@ -1,7 +1,41 @@
 import Chart from 'chart.js/auto';
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css'; // optional for styling
+import 'tippy.js/animations/scale.css';
 
+const portugueseMonthNames = {
+    1 : 'Janeiro',
+    2 : 'Fevereiro',
+    3 : 'Março',
+    4 : 'Abril',
+    5 : 'Maio',
+    6 : 'Junho',
+    7 : 'Julho',
+    8 : 'Agosto',
+    9 : 'Setembro',
+    10: 'Outubro',
+    11 : 'Novembro',
+    12 : 'Dezembro'
+};
+
+const getNumberOfMonths = (response) => {
+    const monthNumbers = [];
+    for (let key in {...response.expenses, ...response.incomes} ){
+        monthNumbers.push(key)
+    }
+
+    return monthNumbers.sort();
+}
+
+const getMonthNameFromNumber = (monthNumber) => {
+    return portugueseMonthNames[monthNumber];
+}
 
 $(function () {
+    tippy('.card[data-tippy-content]', {
+        content: '<strong>Bolded content</strong>',
+        allowHTML: true,
+    });
 
     const loadChartExpensesInYear = (year) => {
 
@@ -10,117 +44,66 @@ $(function () {
         const ctxExpense = $('#myChartExpenses');
         let valuesExpensesPerMonth = [];
         let valuesIncomesPerMonth = [];
-        const monthsInYear = {
-            1 : 'Jan',
-            2 : 'Fev',
-            3 : 'Mar',
-            4 : 'Abr',
-            5 : 'Mai',
-            6 : 'Jun',
-            7 : 'Jul',
-            8 : 'Ago',
-            9 : 'Set',
-            10: 'Out',
-            11 : 'Now',
-            12 : 'Dez'
-        };
 
 
-        const data = {'year' : year};
 
-        $.ajax({
+
+
+            const data = {'year' : year};
+
+            $.ajax({
             url: `ajax/get/year-relatory`,
             method: "GET",
             data,
             success: function (response) {
-                console.log(response);
 
-                for (const key in response.expenses){
-                    valuesExpensesPerMonth.push(response.expenses[key]);
-                }
+                let monthsToLabel = [];
 
-                for (const key in response.incomes){
-                    valuesIncomesPerMonth.push(response.incomes[key]);
-                }
+                const numberOfMonts = getNumberOfMonths(response);
+
+                numberOfMonts.forEach((number)=>{
+
+                    let monthNumber = number.replace('0','');
+
+                    const monthName = portugueseMonthNames[monthNumber];
+                    monthsToLabel.push(monthName);
+                    console.log(monthName);
+                    valuesIncomesPerMonth.push(response.incomes[number] || 0);
+                    valuesExpensesPerMonth.push(response.expenses[number] || 0);
+                })
 
                 new Chart(ctxIncome, {
                     type: 'bar',
                     data: {
-                      labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jul', 'Ago', 'Set', 'Out', 'Now', 'Dez'],
+                      labels: monthsToLabel,
                       datasets: [
                         {
+                            axis: 'y',
                             label: 'Ganhos',
                             data: valuesIncomesPerMonth,
-                            borderColor: 'green',
-                            backgroundColor: 'green',
+                            backgroundColor: [
+                                'rgba(0, 255, 0, 0.4)',
+                            ],
+                            fill: false,
+                            borderColor: 'green'
+
                         },
-                        // {
-                        //   label: 'Gastos',
-                        //   data: valuesExpensesPerMonth,
-                        //   borderColor: 'red',
-                        //   backgroundColor: 'red',
-                        // },
-
-                      ],
-                    },
-                    options: {
-                      indexAxis: 'x',
-                      // Elements options apply to all of the options unless overridden in a dataset
-                      // In this case, we are setting the border of each horizontal bar to be 2px wide
-                      elements: {
-                        bar: {
-                          borderWidth: 2,
-                        }
-                      },
-                      responsive: true,
-                      plugins: {
-                        legend: {
-                          display: false,
-                          position: 'right',
-                        },
-                        title: {
-                          display: true,
-                          text: 'Proventos'
-                        }
-                      }
-                    },
-                  });
-
-                  new Chart(ctxExpense, {
-                    type: 'bar',
-                    data: {
-                      labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jul', 'Ago', 'Set', 'Out', 'Now', 'Dez'],
-                      datasets: [
-
                         {
-                          label: 'Gastos',
-                          data: valuesExpensesPerMonth,
-                          borderColor: 'red',
-                          backgroundColor: 'red',
+                            axis: 'y',
+                            label: 'Gastos',
+                            data: valuesExpensesPerMonth,
+                            backgroundColor: [
+                            'rgba(255, 0, 0, 0.4)',
+                            ],
+                            fill: false,
+                            borderColor: 'red'
+
                         },
 
                       ],
                     },
                     options: {
                       indexAxis: 'x',
-                      // Elements options apply to all of the options unless overridden in a dataset
-                      // In this case, we are setting the border of each horizontal bar to be 2px wide
-                      elements: {
-                        bar: {
-                          borderWidth: 2,
-                        }
-                      },
-                      responsive: true,
-                      plugins: {
-                        legend: {
-                          display: false,
-                          position: 'right',
-                        },
-                        title: {
-                          display: true,
-                          text: 'Gastos'
-                        }
-                      }
                     },
                   });
             }
@@ -202,7 +185,6 @@ $(function () {
                 method: "GET",
 
                 success: function (response) {
-
                     const selectedMonth = response.selectedMonth < 10 ? "0" + response.selectedMonth : response.selectedMonth
 
                     let incomeValue = response.incomes.byMonth[selectedMonth] || 0;
@@ -228,6 +210,8 @@ $(function () {
                     $("#year-avg-expenses").text(toMoney(response.expenses.avg))
                     $("#total-expenses-year").text(toMoney(valueexpensesInYear))
                     $("#total-incomes-year").text(toMoney(valueIncomeInYear))
+                    $("#year-median-expenses").text(toMoney(response.expenses.median));
+                    $("#year-median-incomes").text(toMoney(response.incomes.median));
 
                     let TotalExpesenesConvertedValue = valueIncomesInMonth == 0
                         ? '100'

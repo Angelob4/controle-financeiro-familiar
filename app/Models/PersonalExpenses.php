@@ -14,7 +14,7 @@ class PersonalExpenses extends Model
 
     function scopeGetByYear($query, $year){
 
-        return $query->whereYear('payment_date', $year);
+        return $query->whereYear('payment_date', $year)->orderBy('payment_date');
     }
 
 

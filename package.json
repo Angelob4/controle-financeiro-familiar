@@ -16,6 +16,7 @@
     "dependencies": {
         "chart.js": "^4.2.1",
         "jquery": "^3.6.4",
-        "popper": "^1.0.1"
+        "popper": "^1.0.1",
+        "tippy.js": "^6.3.7"
     }
 }
